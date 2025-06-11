@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced JSON Report Generator</title>
+    <title>Polished JSON Report Generator</title>
     
     <!-- External libraries for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -11,100 +11,94 @@
 
     <style>
         :root {
-            --primary-color: #4A90E2; /* A slightly softer blue */
-            --secondary-color: #50E3C2; /* A fresh mint green */
-            --background-color: #f4f7f9;
-            --text-color: #333;
+            --primary-color: #3a7bd5;
+            --secondary-color: #3a6073;
+            --background-color: #f0f2f5;
+            --text-color: #4a4a4a;
             --heading-color: #1a2533;
             --card-bg: #ffffff;
             --border-color: #e1e8ed;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --code-bg: #2d2d2d;
+            --shadow-color: rgba(50, 50, 93, 0.1);
+            --tag-bg: #eaf1f8;
+            --tag-text: #3a7bd5;
         }
 
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             margin: 0;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 960px;
             margin: 20px auto;
             padding: 20px;
         }
 
         .header {
             text-align: center;
-            background-color: var(--card-bg);
-            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px var(--shadow-color);
+            box-shadow: 0 10px 20px rgba(58, 123, 213, 0.2);
             margin-bottom: 30px;
-            border: 1px solid var(--border-color);
         }
 
-        h1 {
-            color: var(--primary-color);
+        .header h1 {
+            color: white;
+            font-weight: 700;
             margin: 0 0 10px 0;
         }
-
+        .header p {
+            opacity: 0.9;
+            margin: 0;
+        }
+        
         .controls {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
-            margin-top: 20px;
+            margin-top: 25px;
+        }
+
+        .file-upload-label, .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95em;
         }
 
         .file-upload-label {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--primary-color);
+            background-color: rgba(255, 255, 255, 0.2);
             color: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-weight: 500;
         }
         .file-upload-label:hover {
-            background-color: #357ABD;
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
         }
-        #file-input {
-            display: none;
-        }
+        #file-input { display: none; }
 
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            background-color: var(--secondary-color);
-            color: #333;
-        }
-        .btn:disabled {
-            background-color: #b0bec5;
-            cursor: not-allowed;
-            color: white;
-        }
+        .btn { background-color: #fff; color: var(--primary-color); }
+        .btn:disabled { background-color: #b0bec5; color: white; cursor: not-allowed; }
         .btn:not(:disabled):hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(80, 227, 194, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        .btn.pdf { background-color: #d32f2f; color: white;}
-        .btn.pdf:not(:disabled):hover { box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); }
-        .btn.md { background-color: #388e3c; color: white;}
-        .btn.md:not(:disabled):hover { box-shadow: 0 4px 10px rgba(56, 142, 60, 0.3); }
         
         #filename-display {
             font-style: italic;
-            color: #555;
-            margin-top: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 15px;
             display: block;
         }
 
@@ -112,8 +106,7 @@
             background-color: var(--card-bg);
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px var(--shadow-color);
-            border: 1px solid var(--border-color);
+            box-shadow: 0 5px 25px var(--shadow-color);
         }
 
         .placeholder {
@@ -123,7 +116,102 @@
             font-size: 1.2em;
         }
 
-        /* NEW STYLES for dynamic content */
+        /* NEW POLISHED STYLES */
+        .report-section {
+            margin-bottom: 45px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .report-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0; padding-bottom: 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .section-header svg {
+            width: 32px;
+            height: 32px;
+            color: var(--primary-color);
+            flex-shrink: 0;
+        }
+        .section-header h2 {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--heading-color);
+            margin: 0;
+        }
+        
+        .report-section p { font-size: 1.05em; }
+        .report-section ul { list-style-type: '✓  '; padding-left: 25px; }
+        .report-section li { margin-bottom: 8px; }
+
+        .nested-object-box {
+            background: #f9fafb;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .nested-object-box p {
+            margin: 0 0 12px 0;
+            font-size: 0.95em;
+        }
+        .nested-object-box p:last-child { margin-bottom: 0; }
+        .nested-object-box strong {
+            color: var(--secondary-color);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .tag {
+            background-color: var(--tag-bg);
+            color: var(--tag-text);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .mini-card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .mini-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fdfdfd;
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+        .mini-card p { margin: 0 0 12px 0; font-size: 0.9em; }
+        .mini-card p:last-child { margin-bottom: 0; }
+        .mini-card strong {
+            color: var(--primary-color);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .mini-card a {
+            color: var(--secondary-color);
+            word-break: break-all;
+        }
+        
+        /* Styles for Array of Objects (like results.json) */
         .report-card {
             border: 1px solid var(--border-color);
             border-radius: 10px;
@@ -134,7 +222,7 @@
         }
         .report-card:last-child { margin-bottom: 0; }
         
-        .report-card h3, .report-section h2 {
+        .report-card h3 {
             font-size: 1.6em;
             color: var(--heading-color);
             margin-top: 0;
@@ -142,68 +230,38 @@
             padding-bottom: 10px;
             border-bottom: 2px solid var(--primary-color);
         }
-        .report-section {
-             margin-bottom: 25px;
-        }
-        
         .field-item {
             margin-bottom: 15px;
         }
 
-        .field-item strong {
+        .field-item > strong {
             color: var(--primary-color);
             display: block;
             margin-bottom: 3px;
         }
 
-        .field-item a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            word-break: break-all;
-        }
-        .field-item a:hover {
-            text-decoration: underline;
-        }
+        .field-item a { color: #009688; text-decoration: none; word-break: break-all; }
+        .field-item a:hover { text-decoration: underline; }
+
+        details { border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; background-color: #f9fafb; margin-top: 10px; }
+        summary { font-weight: 500; color: var(--heading-color); cursor: pointer; list-style-type: '► '; }
+        details[open] > summary { list-style-type: '▼ '; }
+        pre { background-color: #2d2d2d; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; font-family: "Fira Code", "Courier New", monospace; }
         
-        details {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px;
-            background-color: #f9fafb;
-        }
-        summary {
-            font-weight: 500;
-            color: var(--heading-color);
-            cursor: pointer;
-            list-style-type: '► ';
-        }
-        details[open] > summary {
-            list-style-type: '▼ ';
-        }
-        pre {
-            background-color: var(--code-bg);
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: "Fira Code", "Courier New", monospace;
-        }
     </style>
 </head>
 <body>
 
     <div class="container">
         <header class="header">
-            <h1>Advanced JSON Report Generator</h1>
-            <p>Upload any JSON file—object or array—to generate a clean, readable report.</p>
+            <h1>JSON Report Generator</h1>
+            <p>Upload a JSON file to generate a beautifully structured, presentation-ready report.</p>
             <div class="controls">
                 <label for="file-input" class="file-upload-label">Upload JSON</label>
                 <input type="file" id="file-input" accept=".json">
                 <button id="btn-html" class="btn" disabled>Download HTML</button>
-                <button id="btn-pdf" class="btn pdf" disabled>Download PDF</button>
-                <button id="btn-md" class="btn md" disabled>Download Markdown</button>
+                <button id="btn-pdf" class="btn" disabled>Download PDF</button>
+                <button id="btn-md" class="btn" disabled>Download Markdown</button>
             </div>
              <span id="filename-display"></span>
         </header>
@@ -211,9 +269,24 @@
         <div id="report-container">
             <div class="placeholder">
                 <p>Your beautiful report will appear here once you upload a file.</p>
-                <p>Try the `results.json` file to see the new array and collapsible content features!</p>
+                <p>Try `youtube_analysis...json` to see the polished presentation!</p>
             </div>
         </div>
+    </div>
+    
+    <!-- SVG Icons for Sections -->
+    <div id="svg-icons" style="display: none;">
+        <svg id="icon-default" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+        <svg id="icon-channelNameSuggestion" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
+        <svg id="icon-overallPotential" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" /></svg>
+        <svg id="icon-targetAudienceDeepDive" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.28a4.5 4.5 0 0 0-1.38-8.62M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 7a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+        <svg id="icon-contentStrategy" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" /></svg>
+        <svg id="icon-monetizationOpportunities" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-15c-.621 0-1.125-.504-1.125-1.125V8.25m15-3.75a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v1.5" /></svg>
+        <svg id="icon-competitionSnapshot" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+        <svg id="icon-seoAndDiscovery" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672 13.684 16.6m0 0-2.51 2.225.569-9.47 5.227 7.917-3.286-.672ZM12 2.25V4.5m5.834.166-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243-1.59-1.59" /></svg>
+        <svg id="icon-uniqueSellingPropositionDevelopment" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" /></svg>
+        <svg id="icon-potentialChallenges" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" /></svg>
+        <svg id="icon-actionableFirstSteps" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.092 1.21-.138 2.43-.138 3.662v4.159c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.092-1.21.138-2.43.138-3.662v-4.159Z" /></svg>
     </div>
 
     <script>
@@ -223,6 +296,7 @@
         const btnPdf = document.getElementById('btn-pdf');
         const btnMd = document.getElementById('btn-md');
         const filenameDisplay = document.getElementById('filename-display');
+        const iconContainer = document.getElementById('svg-icons');
 
         let jsonData = null;
         let originalFilename = 'report';
@@ -246,7 +320,7 @@
                     renderReport();
                     toggleButtons(true);
                 } catch (error) {
-                    reportContainer.innerHTML = `<div class="placeholder"><p style="color:red;"><strong>Error:</strong> Invalid JSON file. Please check the format.</p><p>${error.message}</p></div>`;
+                    reportContainer.innerHTML = `<div class="placeholder"><p style="color:red;"><strong>Error:</strong> Invalid JSON file.</p><p>${error.message}</p></div>`;
                     toggleButtons(false);
                 }
             };
@@ -264,42 +338,104 @@
             return result.charAt(0).toUpperCase() + result.slice(1);
         }
 
-        // --- MASTER HTML RENDERER (DISPATCHER) ---
-        function renderReport() {
-            if (!jsonData) return;
-            
-            if (Array.isArray(jsonData)) {
-                reportContainer.innerHTML = renderArrayOfObjectsAsHtml(jsonData);
-            } else if (typeof jsonData === 'object' && jsonData !== null) {
-                reportContainer.innerHTML = renderSingleObjectAsHtml(jsonData);
-            } else {
-                reportContainer.innerHTML = `<div class="placeholder"><p>JSON content is not an object or array.</p></div>`;
-            }
-        }
-        
-        // --- Renders a single top-level object (original functionality) ---
-        function renderSingleObjectAsHtml(data) {
-             let html = '';
-             for (const key in data) {
-                html += '<div class="report-section">';
-                html += `<h2>${formatKey(key)}</h2>`;
-                html += renderValueAsHtml(key, data[key]);
-                html += '</div>';
-            }
-            return html;
+        function getIcon(key) {
+            const icon = iconContainer.querySelector(`#icon-${key}`);
+            return icon ? icon.outerHTML : iconContainer.querySelector('#icon-default').outerHTML;
         }
 
-        // --- Renders a top-level array of objects (new functionality) ---
-        function renderArrayOfObjectsAsHtml(arr) {
+        // --- MASTER HTML RENDERER ---
+        function renderReport() {
+            if (!jsonData) return;
+            let finalHtml = '';
+            
+            if (Array.isArray(jsonData)) {
+                // Handle array of objects (like results.json)
+                finalHtml = renderArrayAsCards(jsonData);
+            } else if (typeof jsonData === 'object' && jsonData !== null) {
+                // Handle single object (like youtube_analysis.json)
+                for (const key in jsonData) {
+                    finalHtml += '<div class="report-section">';
+                    finalHtml += `<div class="section-header">${getIcon(key)}<h2>${formatKey(key)}</h2></div>`;
+                    finalHtml += renderValue(key, jsonData[key]);
+                    finalHtml += '</div>';
+                }
+            } else {
+                finalHtml = `<div class="placeholder"><p>Unsupported JSON structure.</p></div>`;
+            }
+            reportContainer.innerHTML = finalHtml;
+        }
+
+        function renderValue(key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (Array.isArray(value)) {
+                    // It's an array
+                    if (value.length > 0 && typeof value[0] === 'object') {
+                        return renderArrayOfObjectsAsMiniCards(value);
+                    } else {
+                        return renderArrayOfStrings(key, value);
+                    }
+                } else {
+                    // It's a nested object
+                    return renderNestedObject(value);
+                }
+            }
+            // It's a simple string, number, or boolean
+            return `<p>${String(value).replace(/\n/g, '<br>')}</p>`;
+        }
+
+        function renderArrayOfStrings(key, arr) {
+            if (key.toLowerCase().includes('keywords')) {
+                const tags = arr.map(item => `<span class="tag">${item}</span>`).join('');
+                return `<div class="tag-container">${tags}</div>`;
+            } else {
+                const listItems = arr.map(item => `<li>${item}</li>`).join('');
+                return `<ul>${listItems}</ul>`;
+            }
+        }
+
+        function renderArrayOfObjectsAsMiniCards(arr) {
+            const cards = arr.map(obj => {
+                let cardContent = '';
+                for (const key in obj) {
+                    cardContent += `<p><strong>${formatKey(key)}:</strong> `;
+                    if (key === 'url') {
+                         cardContent += `<a href="${obj[key]}" target="_blank" rel="noopener noreferrer">${obj[key]}</a>`;
+                    } else {
+                         cardContent += `<span>${obj[key]}</span>`;
+                    }
+                    cardContent += `</p>`;
+                }
+                return `<div class="mini-card">${cardContent}</div>`;
+            }).join('');
+            return `<div class="mini-card-container">${cards}</div>`;
+        }
+
+        function renderNestedObject(obj) {
+            let content = '';
+            for (const key in obj) {
+                content += `<p><strong>${formatKey(key)}:</strong> <span>${obj[key]}</span></p>`;
+            }
+            return `<div class="nested-object-box">${content}</div>`;
+        }
+
+        function renderArrayAsCards(arr) {
             return arr.map((item, index) => {
                 let cardHtml = '<div class="report-card">';
                 const title = item.title || `Result ${index + 1}`;
                 cardHtml += `<h3>${title}</h3>`;
 
                 for (const key in item) {
-                    if (key === 'title') continue; // Already used as card title
+                    if (key === 'title') continue;
                     cardHtml += `<div class="field-item">`;
-                    cardHtml += renderValueAsHtml(key, item[key]);
+                    if (key === 'url') {
+                        cardHtml += `<strong>${formatKey(key)}:</strong> <a href="${item[key]}" target="_blank" rel="noopener noreferrer">${item[key]}</a>`;
+                    } else if (typeof item[key] === 'object' && item[key] !== null) {
+                        cardHtml += `<details><summary>View ${formatKey(key)}</summary><pre><code>${JSON.stringify(item[key], null, 2)}</code></pre></details>`;
+                    } else if (typeof item[key] === 'string' && item[key].length > 500) {
+                        cardHtml += `<details><summary>View ${formatKey(key)}</summary><pre><code>${item[key]}</code></pre></details>`;
+                    } else {
+                        cardHtml += `<strong>${formatKey(key)}:</strong> <span>${item[key]}</span>`;
+                    }
                     cardHtml += `</div>`;
                 }
                 cardHtml += '</div>';
@@ -307,67 +443,22 @@
             }).join('');
         }
         
-        // --- Renders any value, with special handling for different types/keys ---
-        function renderValueAsHtml(key, value) {
-            const formattedKey = formatKey(key);
-            
-            if (key === 'url') {
-                return `<strong>${formattedKey}:</strong> <a href="${value}" target="_blank" rel="noopener noreferrer">${value}</a>`;
-            }
-            
-            if (typeof value === 'string') {
-                // If the string is very long, make it collapsible
-                if (value.length > 300) {
-                     return renderCollapsibleContent(formattedKey, value);
-                }
-                return `<strong>${formattedKey}:</strong> <span>${value.replace(/\n/g, '<br>')}</span>`;
-            }
-            
-            if (Array.isArray(value)) {
-                 if (typeof value[0] === 'string') {
-                    const listItems = value.map(item => `<li>${item}</li>`).join('');
-                    return `<strong>${formattedKey}:</strong> <ul>${listItems}</ul>`;
-                }
-                // Handle array of objects if needed in the future
-            }
-
-            if (typeof value === 'object' && value !== null) {
-                // Make all nested objects collapsible
-                return renderCollapsibleContent(formattedKey, JSON.stringify(value, null, 2));
-            }
-            
-            // Default for numbers, booleans, etc.
-            return `<strong>${formattedKey}:</strong> <span>${value}</span>`;
-        }
-
-        function renderCollapsibleContent(title, content) {
-            return `
-                <details>
-                    <summary>View ${title}</summary>
-                    <pre><code>${content}</code></pre>
-                </details>
-            `;
-        }
-        
         // --- DOWNLOAD/EXPORT FUNCTIONS ---
-
+        // (These are largely unchanged from the previous robust version)
         function downloadHtml() {
             if (!jsonData) return;
             const fullHtml = `
                 <!DOCTYPE html><html lang="en">
                 <head><meta charset="UTF-8"><title>${originalFilename} Report</title>
                 <style>${document.querySelector('style').innerHTML}</style>
+                ${document.getElementById('svg-icons').outerHTML}
                 </head><body><div class="container">
                 <header class="header"><h1>Report for ${originalFilename}</h1></header>
                 <div id="report-container">${reportContainer.innerHTML}</div>
                 </div></body></html>`;
-            
             const blob = new Blob([fullHtml], { type: 'text/html' });
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `${originalFilename}.html`;
-            a.click();
-            URL.revokeObjectURL(a.href);
+            a.href = URL.createObjectURL(blob); a.download = `${originalFilename}.html`; a.click(); URL.revokeObjectURL(a.href);
         }
 
         function downloadPdf() {
@@ -375,98 +466,86 @@
             const { jsPDF } = window.jspdf;
             const content = document.getElementById('report-container');
             const allDetails = content.querySelectorAll('details');
-            
-            btnPdf.textContent = 'Generating...';
-            btnPdf.disabled = true;
-
-            // IMPORTANT: Open all <details> elements for full content capture
+            btnPdf.textContent = 'Generating...'; btnPdf.disabled = true;
             allDetails.forEach(d => d.open = true);
-
-            html2canvas(content, { scale: 2, useCORS: true, logging: false })
-                .then(canvas => {
-                    // Restore UI state by closing the details elements
-                    allDetails.forEach(d => d.open = false);
-
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = pdf.internal.pageSize.getHeight();
-                    const canvasWidth = canvas.width;
-                    const canvasHeight = canvas.height;
-                    const ratio = canvasWidth / canvasHeight;
-                    const widthInPdf = pdfWidth - 40;
-                    const heightInPdf = widthInPdf / ratio;
-                    
-                    let heightLeft = heightInPdf;
-                    let position = 20;
-                    
+            html2canvas(content, { scale: 2, useCORS: true, logging: false }).then(canvas => {
+                allDetails.forEach(d => d.open = false);
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+                const pdfWidth = pdf.internal.pageSize.getWidth(), pdfHeight = pdf.internal.pageSize.getHeight();
+                const canvasWidth = canvas.width, canvasHeight = canvas.height;
+                const ratio = canvasWidth / canvasHeight;
+                const widthInPdf = pdfWidth - 40, heightInPdf = widthInPdf / ratio;
+                let heightLeft = heightInPdf, position = 20;
+                pdf.addImage(imgData, 'PNG', 20, position, widthInPdf, heightInPdf);
+                heightLeft -= (pdfHeight - 40);
+                while (heightLeft > 0) {
+                    position = -(heightInPdf - heightLeft) + 20;
+                    pdf.addPage();
                     pdf.addImage(imgData, 'PNG', 20, position, widthInPdf, heightInPdf);
                     heightLeft -= (pdfHeight - 40);
-
-                    while (heightLeft > 0) {
-                        position = -(heightInPdf - heightLeft) + 20;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 20, position, widthInPdf, heightInPdf);
-                        heightLeft -= (pdfHeight - 40);
-                    }
-                    
-                    pdf.save(`${originalFilename}.pdf`);
-                })
-                .finally(() => {
-                    btnPdf.textContent = 'Download PDF';
-                    toggleButtons(true);
-                });
+                }
+                pdf.save(`${originalFilename}.pdf`);
+            }).finally(() => { btnPdf.textContent = 'Download PDF'; toggleButtons(true); });
         }
         
         function downloadMarkdown() {
-             if (!jsonData) return;
-             const markdown = generateMarkdown(jsonData);
-             const blob = new Blob([markdown], { type: 'text/markdown' });
-             const a = document.createElement('a');
-             a.href = URL.createObjectURL(blob);
-             a.download = `${originalFilename}.md`;
-             a.click();
-             URL.revokeObjectURL(a.href);
+            if (!jsonData) return;
+            const markdown = generateMarkdown(jsonData);
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = `${originalFilename}.md`; a.click(); URL.revokeObjectURL(a.href);
         }
         
-        // --- MASTER MARKDOWN GENERATOR ---
         function generateMarkdown(data) {
             let md = `# Report: ${originalFilename}\n\n`;
             if (Array.isArray(data)) {
-                md += data.map((item, index) => {
-                    let cardMd = `## Result: ${item.title || `Item ${index + 1}`}\n\n`;
+                 md += data.map((item, index) => {
+                    let cardMd = `## ${item.title || `Result ${index + 1}`}\n\n`;
                     for (const key in item) {
                         if (key === 'title') continue;
                         cardMd += renderValueAsMarkdown(key, item[key]);
                     }
                     return cardMd;
                 }).join('---\n\n');
-            } else if (typeof data === 'object' && data !== null) {
+            } else {
                 for (const key in data) {
                     md += `## ${formatKey(key)}\n\n`;
-                    md += renderValueAsMarkdown(key, data[key], true);
+                    md += renderValueAsMarkdown(key, data[key]);
                 }
             }
             return md;
         }
 
-        function renderValueAsMarkdown(key, value, isSingleObject = false) {
+        function renderValueAsMarkdown(key, value) {
             const formattedKey = `**${formatKey(key)}:**`;
-
-            if (key === 'url') {
+            if (typeof value === 'object' && value !== null) {
+                if (Array.isArray(value)) {
+                    if (value.length > 0 && typeof value[0] === 'object') {
+                        let subCards = `${formattedKey}\n\n`;
+                        subCards += value.map(obj => {
+                            let itemMd = '';
+                            for (const subKey in obj) {
+                                itemMd += `*   **${formatKey(subKey)}:** ${obj[subKey]}\n`;
+                            }
+                            return itemMd;
+                        }).join('\n');
+                        return subCards + '\n';
+                    } else {
+                        return `${formattedKey}\n${value.map(v => `* ${v}`).join('\n')}\n\n`;
+                    }
+                } else {
+                    let objMd = `${formattedKey}\n`;
+                    for(const subKey in value) {
+                        objMd += `*   **${formatKey(subKey)}:** ${value[subKey]}\n`;
+                    }
+                    return objMd + '\n';
+                }
+            }
+             if (key === 'url') {
                 return `${formattedKey} [${value}](${value})\n\n`;
             }
-            
-            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-                return `<details><summary>View ${formatKey(key)}</summary>\n\n\`\`\`json\n${JSON.stringify(value, null, 2)}\n\`\`\`\n\n</details>\n\n`;
-            }
-            
-            if (Array.isArray(value) && typeof value[0] === 'string') {
-                 return `${formattedKey}\n${value.map(v => `* ${v}`).join('\n')}\n\n`;
-            }
-
-            const prefix = isSingleObject ? '' : `${formattedKey} `;
-            return `${prefix}${String(value)}\n\n`;
+            return `${formattedKey} ${String(value).replace(/\n/g, '\n\n')}\n\n`;
         }
 
     </script>
